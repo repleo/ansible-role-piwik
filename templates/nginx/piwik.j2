@@ -1,0 +1,32 @@
+{% if piwik_ssl and piwik_redirect_http_to_https %}
+server {
+  listen 80;
+  listen [::]:80;
+  server_name {{piwik_hostname}};
+  return 301 https://$host$request_uri;
+}
+{% endif %}
+
+server {
+{% if piwik_ssl %}
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    ssl_certificate {{ piwik_ssl_certificate }};
+    ssl_certificate_key {{ piwik_ssl_certificate_key }};
+{% else %}
+    listen 0.0.0.0:80;
+    listen [::]:80;
+{% endif %}
+    server_name {{piwik_hostname}};
+
+    root  /srv/www/{{piwik_hostname}};
+    try_files $uri $uri/ /index.php?$args;
+    index index.php index.html index.htm;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}

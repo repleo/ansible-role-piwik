@@ -1,0 +1,17 @@
+---
+# defaults file for ansible-role-rainloop/
+
+# General config.
+piwik_hostname: piwik
+
+# SSL Configuration.
+piwik_ssl: no
+piwik_redirect_http_to_https: yes
+piwik_ssl_certificate: "/etc/nginx/ssl/piwik.crt"
+piwik_ssl_certificate_key: "/etc/nginx/ssl/piwik.key"
+
+# Database config.
+piwik_db_user: piwik
+piwik_db_password: piwik
+piwik_db_host: piwik
+piwik_db_name: piwikdb

@@ -1,0 +1,41 @@
+# tasks file for ansible-role-piwk/
+
+- name: Install base packages debian
+  action: apt pkg={{item}} state=present
+  with_items:
+  - unzip
+  - php5-mysql
+  - php5-fpm
+  - php5-gd
+  - php5-cli
+  - php5-curl
+
+- name: create directory /srv/www
+  file: path=/srv/www/{{piwik_hostname}} state=directory
+
+- name: check if piwik is installed
+  action: shell test -f /srv/www/{{piwik_hostname}}/piwik && echo "ok" || echo ""
+  register: piwik_installed
+
+- name: Download piwik
+  get_url: url=http://builds.piwik.org/piwik.zip dest=/var/www/{{piwik_hostname}}/piwik.zip
+  when: piwik_installed.stdout != "ok"
+
+- name: Extract piwik
+  command: chdir=/srv/www/{{piwik_hostname}} /usr/bin/unzip piwik.zip
+  when: piwik_installed.stdout != "ok"
+
+- name: Username setten van de uitgecheckte mappen
+  file: path={{ item }} owner=www-data group=www-data mode=755 recurse=yes
+  with_items:
+  - /srv/www/{{piwik_hostname}}
+
+- name: Create the nginx configuration for piwik
+  template: src=nginx/piwik.j2 dest=/etc/nginx/sites-available/{{piwik_hostname}}
+  notify:
+   - reload nginx
+
+- name: Create the links to enable piwik configuration
+  file: path=/etc/nginx/sites-enabled/{{piwik_hostname}} state=link src=/etc/nginx/sites-available/{{piwik_hostname}}
+  notify:
+   - reload nginx

@@ -1,0 +1,35 @@
+---
+galaxy_info:
+  author: Jeroen Arnoldus
+  description: Ansible role for installing piwik webtraffic monitor service
+  company: Repleo, Amstelveen, Holland
+  license: GPLv3
+  min_ansible_version: 2.0
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - piwik
+    - analytics
+    - server
+dependencies:
+     - { role: "repleo.nginx",
+               create_nginx_conf: false,
+               nginx_sites: []
+       }
+     - { role: "repleo.mysql",
+            databases: [
+              { name: "{{ rainloop_db_name }}",
+                users: [
+                  { user: "{{ rainloop_db_user }}",
+                    password: "{{ rainloop_db_password }}",
+                    privileges: ALL,
+                    type: database }
+                ]
+              }
+            ]
+       }
