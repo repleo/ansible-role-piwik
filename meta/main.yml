@@ -21,15 +21,15 @@ dependencies:
                create_nginx_conf: false,
                nginx_sites: []
        }
-     - { role: "repleo.mysql",
-            databases: [
-              { name: "{{ rainloop_db_name }}",
-                users: [
-                  { user: "{{ rainloop_db_user }}",
-                    password: "{{ rainloop_db_password }}",
-                    privileges: ALL,
-                    type: database }
-                ]
-              }
+     - { role: "geerlingguy.mysql",
+            mysql_root_password: "{{ piwik_db_root_password }}",
+            mysql_databases: [
+              { name: "{{ piwik_db_name }}"
+            ],
+            mysql_users: [
+              { name: "{{ piwik_db_user }}",
+                host: "{{ piwik_db_host }}",
+                password: "{{ piwik_db_password }}",
+                priv: "{{ piwik_db_name }}.*:ALL"}
             ]
        }
