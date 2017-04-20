@@ -24,7 +24,7 @@ dependencies:
      - { role: "geerlingguy.mysql",
             mysql_root_password: "{{ piwik_db_root_password }}",
             mysql_databases: [
-              { name: "{{ piwik_db_name }}"
+              { name: "{{ piwik_db_name }}" }
             ],
             mysql_users: [
               { name: "{{ piwik_db_user }}",
