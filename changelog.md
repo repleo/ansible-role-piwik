@@ -1,7 +1,8 @@
 # Change Log
 The piwik ansible installation change history
 
-
+## [0.1.1] - Release 2017-04-19
+* minor fixes
 
 ## [0.1.0] - Release 2017-04-19
 

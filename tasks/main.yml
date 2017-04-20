@@ -13,12 +13,17 @@
 - name: create directory /srv/www
   file: path=/srv/www/{{piwik_hostname}} state=directory
 
+- name: set always_populate_raw_post_data=-1  in php.ing
+  replace: dest=/etc/php5/fpm/php.ini regexp=';?always_populate_raw_post_data(\s+)(.+)' replace='always_populate_raw_post_data = -1'
+  notify:
+    - restart php5-fpm
+
 - name: check if piwik is installed
-  action: shell test -f /srv/www/{{piwik_hostname}}/piwik && echo "ok" || echo ""
+  action: shell test -d /srv/www/{{piwik_hostname}}/piwik && echo "ok" || echo ""
   register: piwik_installed
 
 - name: Download piwik
-  get_url: url=http://builds.piwik.org/piwik.zip dest=/var/www/{{piwik_hostname}}/piwik.zip
+  get_url: url=http://builds.piwik.org/piwik.zip dest=/srv/www/{{piwik_hostname}}/piwik.zip
   when: piwik_installed.stdout != "ok"
 
 - name: Extract piwik
